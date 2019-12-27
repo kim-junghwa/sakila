@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sakila index</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>	
+	a {
+		color: black;
+		text-decoration: none;
+	}
+	body {
+		padding: 0;
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		background-position: 0 0;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		background-size: cover;
+		position: relative;
+		overflow-y: auto;
+	}
+	
+	#aside {
+		width: 200px;
+		height: 3000px;
+		position: fixed;
+		background: orange;
+		overflow: hidden;
+		float: left;
+	}
+	
+	#section {
+		margin-left: 300px;
+		margin-right: 1000px;
+		margin-bottom: 100px;
+		background: white;
+	}
+	
+	table {
+		border:1px solid #000000;
+		border-radius: 8px;
+	}
+	
+	#header {
+		background-color: #6c7ae0;
+	}
+	
+    .menu a{
+    	cursor:pointer;
+    }
+    
+    .menu .hide{
+    	display:none;
+    }
+    
+    #home {
+    	text-align: center;
+    }
+</style>
+</head>
+<body>
+	<div id="aside">
+	</div>
+	<div id="section">
+		<h1>SAKILA</h1>
+		<h2>sakila database table Info</h2>
+		<table>
+			<thead id="header">
+				<tr>
+					<th>테이블 이름</th>
+					<th>행의 수</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>country</td>
+					<td><span id="countryRow"></span></td>
+				</tr>
+				<tr>
+					<td>city</td>
+					<td><span id="cityRow"></span></td>
+				</tr>
+				<tr>
+					<td>address</td>
+					<td><span id="addressRow"></span></td>
+				</tr>
+				<tr>
+					<td>customer</td>
+					<td><span id="customerRow"></span></td>
+				</tr>
+				<tr>
+					<td>staff</td>
+					<td><span id="staffRow"></span></td>
+				</tr>
+				<tr>
+					<td>store</td>
+					<td><span id="storeRow"></span></td>
+				</tr>
+				<tr>
+					<td>payment</td>
+					<td><span id="paymentRow"></span></td>
+				</tr>
+				<tr>
+					<td>rental</td>
+					<td><span id="rentalRow"></span></td>
+				</tr>
+				<tr>
+					<td>category</td>
+					<td><span id="categoryRow"></span></td>
+				</tr>
+				<tr>
+					<td>film-category</td>
+					<td><span id="filmCategoryRow"></span></td>
+				</tr>
+				<tr>
+					<td>film</td>
+					<td><span id="filmRow"></span></td>
+				</tr>
+				<tr>
+					<td>language</td>
+					<td><span id="languageRow"></span></td>
+				</tr>
+				<tr>
+					<td>actor</td>
+					<td><span id="actorRow"></span></td>
+				</tr>
+				<tr>
+					<td>film-actor</td>
+					<td><span id="filmActorRow"></span></td>
+				</tr>
+				<tr>
+					<td>inventory</td>
+					<td><span id="inventoryRow"></span></td>
+				</tr>
+				<tr>
+					<td>film-text</td>
+					<td><span id="filmTextRow"></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	//aside.html include
+	$("#aside").load("/sakila/side.html");
+	
+	$.ajax({
+		url:"/sakila/indexController",
+		method:"POST",
+		success:function(json){
+			//console.log(json);
+			$("#countryRow").text(json.countryRow);// .text(), val(), html()
+			$("#cityRow").text(json.cityRow);
+			$("#addressRow").text(json.addressRow);
+			$("#customerRow").text(json.customerRow);
+			$("#paymentRow").text(json.paymentRow);
+			$("#rentalRow").text(json.rentalRow);
+			$("#staffRow").text(json.staffRow);
+			$("#storeRow").text(json.storeRow);
+			$("#actorRow").text(json.actorRow);
+			$("#categoryRow").text(json.categoryRow);
+			$("#filmActorRow").text(json.filmActorRow);
+			$("#filmCategoryRow").text(json.filmCategoryRow);
+			$("#filmRow").text(json.filmRow);
+			$("#filmTextRow").text(json.filmTextRow);
+			$("#inventoryRow").text(json.inventoryRow);
+			$("#languageRow").text(json.languageRow);
+		}
+	})
+	// html dom 이 다 로딩된 후 실행된다.
+	$(document).ready(function(){
+		// menu 클래스 바로 하위에 있는 a 태그를 클릭했을때
+		$(".menu>a").on("click",function(){
+			console.log("click")
+			let submenu = $(this).next("ul");
+			
+			// submenu 가 화면상에 보일때는 위로 보드랍게 접고 아니면 아래로 보드랍게 펼치기
+			if( submenu.is(":visible") ){
+				submenu.slideUp();
+			}else{
+				submenu.slideDown();
+			}
+		});
+	});
+</script>
+</html>

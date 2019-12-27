@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>customer.html</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+	a {
+		color: black;
+		text-decoration: none;
+	}
+	
+	body {
+		padding: 0;
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		background-position: 0 0;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		background-size: cover;
+		position: relative;
+		overflow-y: auto;
+	}
+	
+	#aside {
+		width: 200px;
+		height: 3000px;
+		position: fixed;
+		background: orange;
+		overflow: hidden;
+		float: left;
+	}
+	
+	#section {
+		margin-left: 300px;
+		margin-right: 1000px;
+		margin-bottom: 100px;
+		background: white;
+	}
+
+    .menu a{
+    	cursor:pointer;
+    }
+    .menu .hide{
+    	display:none;
+    }
+    #home {
+    	text-align: center;
+    }
+</style>
+</head>
+<body>
+	<div id="aside">
+		
+	</div>
+	<div id="section">
+		<h1>CUSTOMER</h1>
+		<h2>add customer</h2>
+		<div>
+			<!-- 고객의 주소 입력 -->
+			<div>
+				<table>
+					<tr>
+						<td>
+							<!-- country list -->
+							<div>
+								<select size="10" id="countryList">
+									
+								</select>
+							</div>
+						</td>
+						<td>
+							<!-- city list -->
+							<div>
+								<select size="10" id="cityList">
+									
+								</select>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div>
+					<!-- 고객 정보 입력 -->
+					<h3>고객 정보 입력</h3>
+					<form>
+						<fieldset>
+							<legend>주소 정보</legend>
+							<!-- addresss 입력  -->
+							<div>	
+								address : 
+								<input type="text" id="address">
+							</div>
+							<div>
+								address2 : 
+								<input type="text" id="address2">
+							</div>
+							<div>
+								district : 
+								<input type="text" id="district">
+							</div>
+							<div>
+								cityId : 
+								<input type="text" id="cityId" readonly="readonly">
+							</div>
+							<div>
+								postalCode : 
+								<input type="text" id="postalCode">
+							</div>
+							<div>
+								phone : 
+								<input type="text" id="phone"> 
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>고객 정보</legend>
+							<div>
+								storeId : 
+								<select id="storeId">
+									<option value="1">1</option>
+									<option value="2">2</option>
+								</select>
+							</div>
+							<div>
+								firstNama : 
+								<input type="text" id="firstName">
+							</div>
+							<div>
+								lastNama : 
+								<input type="text" id="lastName">
+							</div>
+							<div>
+								email : 
+								<input type="text" id="email">
+							</div>
+						</fieldset>
+						<button type="button" id="addCustomer">add</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<h2>customer list</h2>
+		<!-- 고객 정보(일부) 리스트 : 상세정보 링크 -->
+		<div>
+		
+		</div>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	//aside.html include
+	$("#aside").load("/sakila/side.html");	
+	
+	$.ajax({
+		url : "/sakila/address/selectCountryListAll",
+		method : "POST",
+		success : function(json) {
+			$("#countryList").empty();
+			$(json).each(function(index, item){
+				let temp = "<option value='";
+				temp += item.countryId;
+				temp += "'>";
+				temp += item.country;
+				temp += "</option>";
+				$("#countryList").append(temp);
+			});
+		}
+	});
+	
+	$("#countryList").change(function(){
+		$.ajax({
+			url : "/sakila/address/selectCityListByCountry",
+			method : "POST",
+			data : {"countryId":$("#countryList").val()},
+			success : function(json) {
+				$("#cityList").empty();
+				$(json).each(function(index, item){
+					let temp = "<option value='";
+					temp += item.cityId;
+					temp += "'>";
+					temp += item.city;
+					temp += "</option>";
+					$("#cityList").append(temp);
+				});
+			}
+		});
+	});
+	
+	$("#cityList").change(function(){
+		$("#cityId").val($("#cityList").val());
+	});
+	
+	$("#addCustomer").click(function(){
+		if ($("#cityId").val() === "" || $("#address").val() === "" || $("#address2").val() === "" || $("#district").val() === "" || $("#postalCode").val() === "" || $("#phone").val() === "" || $("#storeId").val() === "" || $("#firstName").val() === "" || $("#lastName").val() === "" || $("#email").val() === "") {
+			alert("빈칸있음");
+			return;
+		}
+		console.log($("#cityId").val());
+		$.ajax({
+			url : "/sakila/customer/insertCustomer",
+			method : "POST",
+			data : {"cityId": $("#cityId").val(), "address": $("#address").val(), "address2" : $("#address2").val(), "district": $("#district").val(), "postalCode" : $("#postalCode").val(),"phone": $("#phone").val(),"storeId": $("#storeId").val(),"firstName": $("#firstName").val(),"lastName": $("#lastName").val(),"email": $("#email").val()},
+			success : function(json) {
+				console.log("insert Address success!");
+			}
+		});
+	});
+	// html dom 이 다 로딩된 후 실행된다.
+	$(document).ready(function(){
+		// menu 클래스 바로 하위에 있는 a 태그를 클릭했을때
+		$(".menu>a").on("click",function(){
+			console.log("click")
+			var submenu = $(this).next("ul");
+			
+			// submenu 가 화면상에 보일때는 위로 보드랍게 접고 아니면 아래로 보드랍게 펼치기
+			if( submenu.is(":visible") ){
+				submenu.slideUp();
+			}else{
+				submenu.slideDown();
+			}
+		});
+	});
+</script>
+</html>
