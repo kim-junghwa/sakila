@@ -5,7 +5,8 @@ import java.sql.*;
 public class DBHelper {
 	public static Connection getConnection() throws Exception {
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nextn1028", "nextn1028", "kjh1656!@");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/sakila", "root", "java1234");
+		//Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nextn1028", "nextn1028", "kjh1656!@");
 		return conn;
 	}
 	
